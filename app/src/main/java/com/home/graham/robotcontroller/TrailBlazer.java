@@ -48,9 +48,7 @@ public class TrailBlazer extends AppCompatActivity {
 
             @Override
             public void onClick(View view) {
-                for (Square square : Square.activeSquares) {
-                    MainActivity.queue.add(square.toString());
-                }
+                MainActivity.queue.addAll(Square.activeSquares);
             }
         });
 

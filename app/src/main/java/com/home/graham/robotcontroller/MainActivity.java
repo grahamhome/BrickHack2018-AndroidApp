@@ -30,7 +30,7 @@ public class MainActivity extends AppCompatActivity implements Observer {
     private final static String SERVER_IP_ADDRESS = "10.101.53.42";//"129.21.60.175";
     private final static int SERVER_PORT = 6789;
 
-    public static ConcurrentLinkedQueue<String> queue = new ConcurrentLinkedQueue<>();
+    public static ConcurrentLinkedQueue<Square> queue = new ConcurrentLinkedQueue<>();
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -46,13 +46,13 @@ public class MainActivity extends AppCompatActivity implements Observer {
             (serverThread = new Thread(new ServerCommunicator(MainActivity.this, SERVER_IP_ADDRESS, SERVER_PORT))).start();
         }
 
-        transmitButton.setOnClickListener(new View.OnClickListener() {
+        /*transmitButton.setOnClickListener(new View.OnClickListener() {
 
             @Override
             public void onClick(View view) {
                 queue.add(transmitData.getText().toString());
             }
-        });
+        });*/
 
         pathLauncherButton.setOnClickListener(new View.OnClickListener() {
             @Override
