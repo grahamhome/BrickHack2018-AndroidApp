@@ -15,9 +15,8 @@ import java.util.concurrent.atomic.AtomicBoolean;
  * Created by Graham Home on 1/27/2018.
  */
 
-public class ServerCommunicator extends Observable implements Runnable {
+public class ServerCommunicator implements Runnable {
 
-    private MainActivity invoker;
     private String ipAddress;
     private int port;
     //private Socket socket;
@@ -26,11 +25,9 @@ public class ServerCommunicator extends Observable implements Runnable {
     //private DataOutputStream serverWriter;
     public AtomicBoolean running = new AtomicBoolean(true);
 
-    public ServerCommunicator(MainActivity invoker, String ipAddress, int port) {
-        this.invoker = invoker;
+    public ServerCommunicator(String ipAddress, int port) {
         this.ipAddress = ipAddress;
         this.port = port;
-        addObserver(invoker);
     }
 
     @Override
@@ -39,38 +36,25 @@ public class ServerCommunicator extends Observable implements Runnable {
             Socket socket = null;
             DataOutputStream serverWriter = null;
             Square data;
-            while ((data = MainActivity.queue.poll()) != null) {
+            while ((data = TrailBlazer.queue.poll()) != null) {
                 try {
                     socket = (socket == null ? new Socket(ipAddress, port) : socket);
                     //serverReader = new BufferedReader(serverStreamReader = new InputStreamReader(socket.getInputStream()));
                     serverWriter = (serverWriter == null ? new DataOutputStream(socket.getOutputStream()) : serverWriter);
                     serverWriter.writeBytes(data.toString() + "\n");
-                    serverWriter.flush();
                 } catch (IOException e) {
-                    setChanged();
-                    notifyObservers(invoker.getApplicationContext().getString(R.string.create_client_failure));
                     return;
                 }
             }
             if (socket != null) {
                 try {
+                    serverWriter.flush();
                     serverWriter.close();
                     socket.close();
                 } catch (IOException e) {
-                    notifyObservers(invoker.getApplicationContext().getString(R.string.shutdown_failure));
+                    return;
                 }
             }
         }
-    }
-
-    private void closeEverything() {
-        //try {
-
-            //serverReader.close();
-            //serverStreamReader.close();
-
-        /*} catch (IOException e) {
-            Toast.makeText(invoker.getApplicationContext(), invoker.getString(R.string.shutdown_failure), Toast.LENGTH_SHORT).show();
-        }*/
     }
 }

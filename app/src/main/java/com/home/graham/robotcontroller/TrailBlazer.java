@@ -18,8 +18,16 @@ import android.widget.ImageView;
 import android.widget.Toast;
 
 import java.util.ArrayList;
+import java.util.concurrent.ConcurrentLinkedQueue;
 
 public class TrailBlazer extends AppCompatActivity {
+
+    private static Thread serverThread;
+
+    private final static String SERVER_IP_ADDRESS = "129.21.60.175";//"10.101.53.42";
+    private final static int SERVER_PORT = 6789;
+
+    public static ConcurrentLinkedQueue<Square> queue = new ConcurrentLinkedQueue<>();
 
     Square[][] squares;
     GridLayout gameGrid;
@@ -32,6 +40,10 @@ public class TrailBlazer extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_trail_blazer);
 
+        if (serverThread == null || !serverThread.isAlive()) {
+            (serverThread = new Thread(new ServerCommunicator(SERVER_IP_ADDRESS, SERVER_PORT))).start();
+        }
+
         // Reset squares on game grid
         Square.activeSquares = new ArrayList<>();
 
@@ -41,6 +53,7 @@ public class TrailBlazer extends AppCompatActivity {
             @Override
             public void onClick(View view) {
                 startActivity(new Intent(TrailBlazer.this, TrailBlazer.class));
+                finish();
             }
         });
 
@@ -48,7 +61,7 @@ public class TrailBlazer extends AppCompatActivity {
 
             @Override
             public void onClick(View view) {
-                MainActivity.queue.addAll(Square.activeSquares);
+                queue.addAll(Square.activeSquares);
             }
         });
 
@@ -71,14 +84,12 @@ public class TrailBlazer extends AppCompatActivity {
             @Override
             public void onGlobalLayout() {
                 final int MARGIN = 2;
-                int squareWidth = (gameGrid.getWidth()/numCol) - (2*MARGIN);
-                int squareHeight = (gameGrid.getHeight()/numRow) - (2*MARGIN);
+                int squareSize = (gameGrid.getWidth()/numCol) - (2*MARGIN);
                 for (int x=0; x<numRow; x++) {
                     for (int y=0; y<numCol; y++) {
                         Square square;
                         GridLayout.LayoutParams params = (GridLayout.LayoutParams)(square = squares[x][y]).getLayoutParams();
-                        params.width = squareWidth;
-                        params.height = squareWidth;
+                        params.width = (params.height = squareSize);
                         params.setMargins(MARGIN, MARGIN, MARGIN, MARGIN);
                         square.setLayoutParams(params);
                     }
