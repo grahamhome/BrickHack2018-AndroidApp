@@ -62,6 +62,8 @@ public class TrailBlazer extends AppCompatActivity {
             @Override
             public void onClick(View view) {
                 queue.addAll(Square.activeSquares);
+                runButton.setActivated(false);
+                runButton.setBackgroundColor(getResources().getColor(R.color.inactiveView));
             }
         });
 

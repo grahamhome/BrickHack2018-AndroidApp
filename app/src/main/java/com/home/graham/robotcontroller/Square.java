@@ -37,7 +37,7 @@ public class Square extends View {
 
     @Override
     protected void onDraw(Canvas canvas) {
-        canvas.drawColor(active ? getResources().getColor(R.color.selectedSquare) : getResources().getColor(R.color.unselectedSquare));
+        canvas.drawColor(active ? getResources().getColor(R.color.selectedSquare) : getResources().getColor(R.color.inactiveView));
     }
 
     @Override
