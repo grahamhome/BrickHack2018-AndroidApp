@@ -1,0 +1,9 @@
+<resources>
+    <string name="app_name">RobotController</string>
+    <string name="transmit_label">Data To Send</string>
+    <string name="recieve_label">Received Data</string>
+    <string name="transmit_button">Send</string>
+    <string name="create_client_failure">Unable to create client socket</string>
+    <string name="read_failure">Error attempting to read from server</string>
+    <string name="shutdown_failure">Error attempting to close connection to server</string>
+</resources>
