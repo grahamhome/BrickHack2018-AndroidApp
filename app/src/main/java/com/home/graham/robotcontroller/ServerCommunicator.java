@@ -40,8 +40,8 @@ public class ServerCommunicator extends Observable implements Runnable {
             serverReader = new BufferedReader(serverStreamReader = new InputStreamReader(socket.getInputStream()));
             serverWriter = new DataOutputStream(socket.getOutputStream());
         } catch (IOException e) {
-            MainActivity.whatWentWrong = e.getMessage();
-            MainActivity.error.set(true);
+            setChanged();
+            notifyObservers(e.getMessage());
             return;
         }
         while(running.get()) {
@@ -60,8 +60,8 @@ public class ServerCommunicator extends Observable implements Runnable {
                     serverWriter.flush();
                 }
             } catch (IOException e) {
-                MainActivity.whatWentWrong = invoker.getApplicationContext().getString(R.string.read_failure);
-                MainActivity.error.set(true);
+                setChanged();
+                notifyObservers(invoker.getApplicationContext().getString(R.string.read_failure));
             }
         }
         closeEverything();
